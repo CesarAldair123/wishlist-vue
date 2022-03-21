@@ -1,8 +1,13 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { reactive } from 'vue';
 import Navbar from '../components/Navbar.vue'
+import ProductsList from '../components/ProductsList.vue';
 import ProductDto from '../models/ProductDto';
-import {postProduct, getAllProducts, deleteProduct} from '../services/ProductService'
+import { RouterLink } from 'vue-router';
+import { productsStore } from '../stores/products';
+import { userId, getJwt } from '../services/AuthService';
+
+const store = productsStore()
 
 const info = reactive({
     productName: '',
@@ -10,31 +15,17 @@ const info = reactive({
     productStock: 0
 })
 
-const products = ref([]);
-
-getAllProducts()
-.then(response => {
-    const data = response.data.sort((a,b)=> a.productId - b.productId)
-    products.value.push(...data) 
-})
-
 function onPostProduct(e){
     e.preventDefault()
-    postProduct(new ProductDto(info.productName, info.productPrice, info.productStock))
-    .then(product=> {
-        products.value.push(product)
+    store.addProd(new ProductDto(info.productName, info.productPrice, info.productStock))
+    .then(_=> {
         info.productName = ''
         info.productPrice = 0
         info.productStock = 0
     })
 }
 
-function onDeleteProduct(id){
-    deleteProduct(id)
-    .then(_=> {
-        products.value = products.value.filter(p=> p.productId != id)
-    })
-}
+console.log(userId(getJwt()))
 </script>
 
 <template>
@@ -42,17 +33,7 @@ function onDeleteProduct(id){
     <div class="container mt-3">
         <div class="row">
             <div class="col-md-4">
-                <h2>Products</h2>
-                <ul class="list-group">
-                    <li class="list-group-item" v-for="product in products" v-bind:key="product.id">
-                        <div class="row">
-                            <div class="col-9">{{product.productId}} - {{product.productName}}</div>
-                            <div class="col-3">
-                                <button class="btn btn-danger" @click="onDeleteProduct(product.productId)">X</button>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+                <ProductsList></ProductsList>
             </div>
             <div class="col-md-8">
                 <h2>Add Product</h2>  

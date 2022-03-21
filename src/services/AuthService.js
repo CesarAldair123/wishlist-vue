@@ -18,7 +18,7 @@ export function login(loginRequest){
         if(getRole(getJwt()) == "customer"){
             router.push("/customer")
         }else if(getRole(getJwt()) == "admin"){
-            router.push("/admin")
+            router.push("/admin/product/add")
         }
     })
 }
@@ -39,6 +39,10 @@ export function refresh(){
     .then(response => {
         localStorage.setItem("jwt", response.data.jwt)
     })
+}
+
+export function userId(jwt){
+    return jose.decodeJwt(jwt).userId
 }
 
 export function getRole(jwt){

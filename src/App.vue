@@ -4,7 +4,7 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 </script>
 
 <template>
-  <RouterView />
+  <RouterView :key ='$route.params'/>
 </template>
 
 <style>
