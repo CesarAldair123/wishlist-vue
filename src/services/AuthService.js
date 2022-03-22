@@ -15,6 +15,7 @@ export function login(loginRequest){
     return axios.post(AUTH_API + "/auth/login", loginRequest)
     .then(response => {
         saveTokens(response.data)
+        saveUserId(getJwt())
         if(getRole(getJwt()) == "customer"){
             router.push("/customer")
         }else if(getRole(getJwt()) == "admin"){
@@ -45,6 +46,14 @@ export function userId(jwt){
     return jose.decodeJwt(jwt).userId
 }
 
+export function getNickname(jwt) {
+    return jose.decodeJwt(jwt).sub
+}
+
+export function getUserId() {
+    return localStorage.getItem("userId")
+}
+
 export function getRole(jwt){
     return jose.decodeJwt(jwt).groups[0]
 }
@@ -55,6 +64,10 @@ export function getJwt(){
 
 export function getRefresh(){
     return localStorage.getItem("refreshToken")
+}
+
+function saveUserId(jwt) {
+    localStorage.setItem("userId", jose.decodeJwt(jwt).userId)
 }
 
 function saveTokens(loginResponse){
