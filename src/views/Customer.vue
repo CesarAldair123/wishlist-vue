@@ -4,15 +4,10 @@ import Navbar from '../components/Navbar.vue'
 import WishListDto from '../models/WishListDto';
 import {getUserId} from '../services/AuthService'
 import {getAllProducts, getProduct} from '../services/ProductService'
-import {getWishListByUserId, deleteWishList} from '../services/WishListService'
-
-const info = reactive({
-    productId: 0
-})
+import {getWishListByUserId, deleteWishList, postWishList} from '../services/WishListService'
 
 const userId = getUserId();
 const products = ref([]);
-const product = ref([]);
 const wishlist = ref([]);
 
 getAllProducts()
@@ -29,13 +24,12 @@ getWishListByUserId(userId)
     console.log("DATA " + wishlist.productId)
 })
 
-function onPostWishList(e){
-    e.preventDefault()
-    postProduct(new WishListDto(userId, info.productId))
-    .then(wishlist=> {
-        wishlist.value.push(wishlist)
-        userId
-        info.productId = 0
+function onPostWishList(productId){
+    const product = wishlist.value.filter(p=>p.productId==productId)[0]
+    if(product) return 
+    postWishList(new WishListDto(userId, productId))
+    .then(wish=> {
+        wishlist.value.push(products.value.filter(p=>p.productId==productId)[0])
     })
 }
 
@@ -60,7 +54,7 @@ function onDeleteWishList(userId, productId){
                         <div class="row">
                             <div class="col-9">{{product.productId}} - {{product.productName}}</div>
                             <div class="col-3">
-                                <button class="btn btn-success" @click="getUserId()">+</button>
+                                <button class="btn btn-success" @click="onPostWishList(product.productId)">+</button>
                             </div>
                         </div>
                     </li>
@@ -71,9 +65,9 @@ function onDeleteWishList(userId, productId){
                 <ul class="list-group">
                     <li class="list-group-item" v-for="wishlist in wishlist" v-bind:key="wishlist.id">
                         <div class="row">
-                            <div class="col-9">{{wishlist}} - NOMBRE DEL PRODUCTO </div>
+                            <div class="col-9">{{wishlist.productId}} - {{wishlist.productName}}</div>
                             <div class="col-3">
-                                <button class="btn btn-danger" @click="onDeleteWishList(userId, wishlist)">x</button>
+                                <button class="btn btn-danger" @click="onDeleteWishList(userId, wishlist.productId)">x</button>
                             </div>
                         </div>
                     </li>
