@@ -32,25 +32,30 @@ function onClearFields(){
 }
 
 function onUpdateUser(){
-    if(info.userPassword.length > 0){
-        patchUser(info.userId, info)
-        .then((res) => {
-            const user = res.data
-            store.editUser({
-                userId: user.userId,
-                userName: user.userName,
-                userSurname: user.userSurname,
-                userNickname: user.userNickname,
-                userEmail: user.userEmail,
-                userPassword: user.userPassword,
-                userPhoneNumber: user.userPhoneNumber,
-                userRole: user.userRole
+    if(info.userName.length > 0){
+        if(info.userPassword.length > 0){
+            patchUser(info.userId, info)
+            .then((res) => {
+                const user = res.data
+                store.editUser({
+                    userId: user.userId,
+                    userName: user.userName,
+                    userSurname: user.userSurname,
+                    userNickname: user.userNickname,
+                    userEmail: user.userEmail,
+                    userPassword: user.userPassword,
+                    userPhoneNumber: user.userPhoneNumber,
+                    userRole: user.userRole
+                })
             })
-        })
-        alert("User was updated")
-        onClearFields();
-    }else
-    alert("Password most not be empty")
+            alert("User was updated")
+            onClearFields();
+        }else
+        alert("Password most not be empty")
+    }else{
+        alert("Select one user")
+    }
+    
 }
 
 function onEditUser(id){

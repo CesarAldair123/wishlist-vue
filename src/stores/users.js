@@ -8,7 +8,8 @@ export const usersStore = defineStore("users", ()=>{
   getAllUsers()
   .then(response =>{
     const data = response.data.sort((a,b) => a.userId - b.userId)
-    users.value.push(...data)
+    const dataAdmin = data.filter(user => user.userRole != "admin")
+    users.value.push(...dataAdmin)
   });
 
   function editUser(user){
