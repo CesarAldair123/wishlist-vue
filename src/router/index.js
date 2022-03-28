@@ -5,6 +5,8 @@ import Customer from '../views/Customer.vue'
 import {customerGuard, adminGuard} from './guards.js'
 import AdminAddProd from '../views/AdminAddProd.vue'
 import AdminEditProd from '../views/AdminEditProd.vue'
+import AdminEditUser from '../views/AdminEditUser.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +38,12 @@ const router = createRouter({
       path: '/admin/product/:id',
       name: 'adminEditProd',
       component: AdminEditProd,
+      beforeEnter: adminGuard
+    },
+    {
+      path: '/admin/user',
+      name: 'adminEditUser',
+      component: AdminEditUser,
       beforeEnter: adminGuard
     }
   ]
